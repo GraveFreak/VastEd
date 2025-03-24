@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // 🔥 Base AI Service Class
 class AIService {
@@ -82,44 +83,44 @@ class AIService {
   }
 }
 
-// 🔥 Different AI Models for Each Subject
+// 🔥 Different AI Models for Each Subject, Using .env Variables
 
 class MathsGraveAI extends AIService {
-  MathsGraveAI() : super("https://mathsgrave.hf.space", "hf_MATHS_TOKEN_HERE");
+  MathsGraveAI() : super(dotenv.env['MATHS_AI_URL'] ?? '', dotenv.env['MATHS_AI_TOKEN'] ?? '');
 }
 
 class HistoryGraveAI extends AIService {
-  HistoryGraveAI() : super("https://historygrave.hf.space", "hf_HISTORY_TOKEN_HERE");
+  HistoryGraveAI() : super(dotenv.env['HISTORY_AI_URL'] ?? '', dotenv.env['HISTORY_AI_TOKEN'] ?? '');
 }
 
 class GeographyGraveAI extends AIService {
-  GeographyGraveAI() : super("https://geographygrave.hf.space", "hf_GEOGRAPHY_TOKEN_HERE");
+  GeographyGraveAI() : super(dotenv.env['GEOGRAPHY_AI_URL'] ?? '', dotenv.env['GEOGRAPHY_AI_TOKEN'] ?? '');
 }
 
 class EconomicGraveAI extends AIService {
-  EconomicGraveAI() : super("https://economicgrave.hf.space", "hf_ECONOMIC_TOKEN_HERE");
+  EconomicGraveAI() : super(dotenv.env['ECONOMIC_AI_URL'] ?? '', dotenv.env['ECONOMIC_AI_TOKEN'] ?? '');
 }
 
 class PoliticalGraveAI extends AIService {
-  PoliticalGraveAI() : super("https://politicalgrave.hf.space", "hf_POLITICAL_TOKEN_HERE");
+  PoliticalGraveAI() : super(dotenv.env['POLITICAL_AI_URL'] ?? '', dotenv.env['POLITICAL_AI_TOKEN'] ?? '');
 }
 
 class PhysicsGraveAI extends AIService {
-  PhysicsGraveAI() : super("https://waynebruce2110-gravescienceai.hf.space", "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");
+  PhysicsGraveAI() : super(dotenv.env['PHYSICS_AI_URL'] ?? '', dotenv.env['PHYSICS_AI_TOKEN'] ?? '');
 }
 
 class ChemistryGraveAI extends AIService {
-  ChemistryGraveAI() : super("https://waynebruce2110-gravescienceai.hf.space", "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");
+  ChemistryGraveAI() : super(dotenv.env['CHEMISTRY_AI_URL'] ?? '', dotenv.env['CHEMISTRY_AI_TOKEN'] ?? '');
 }
 
 class BiologyGraveAI extends AIService {
-  BiologyGraveAI() : super("https://waynebruce2110-gravescienceai.hf.space", "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");
+  BiologyGraveAI() : super(dotenv.env['BIOLOGY_AI_URL'] ?? '', dotenv.env['BIOLOGY_AI_TOKEN'] ?? '');
 }
 
 class AIGraveAI extends AIService {
-  AIGraveAI() : super("https://aigrave.hf.space", "hf_AI_TOKEN_HERE");
+  AIGraveAI() : super(dotenv.env['AI_AI_URL'] ?? '', dotenv.env['AI_AI_TOKEN'] ?? '');
 }
 
 class MLGraveAI extends AIService {
-  MLGraveAI() : super("https://machinelearninggrave.hf.space", "hf_ML_TOKEN_HERE");
+  MLGraveAI() : super(dotenv.env['ML_AI_URL'] ?? '', dotenv.env['ML_AI_TOKEN'] ?? '');
 }

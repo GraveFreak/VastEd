@@ -3,10 +3,13 @@ import 'screens/depth_screen.dart';
 import 'screens/eval_screen.dart';
 import 'screens/locker_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 

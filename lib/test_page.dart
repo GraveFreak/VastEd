@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'quiz_page.dart';
 
 class TestPage extends StatefulWidget {
@@ -18,8 +19,8 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
   List<Map<String, dynamic>> tests = [];
   bool isLoading = true;
-  final String hfToken = "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"; // ✅ HF API Token
-  final String hfApiUrl = "https://dgsr2809-Quest.hf.space/gradio_api/call/chat"; // ✅ HF Space API URL
+  final String hfToken = dotenv.env['HF_API_TOKEN'] ?? ""; // ✅ HF API Token from .env
+  final String hfApiUrl = dotenv.env['HF_API_URL'] ?? ""; // ✅ HF Space API URL from .env
 
   @override
   void initState() {
@@ -81,7 +82,7 @@ class _TestPageState extends State<TestPage> {
 
   Future<Map<String, dynamic>> _fetchTestFromAI(String prompt) async {
     try {
-      final Uri requestUri = Uri.parse("https://dgsr2809-quest.hf.space/gradio_api/call/chat");
+      final Uri requestUri = Uri.parse(hfApiUrl);
 
       final Map<String, dynamic> requestBody = {
         "data": [
@@ -93,27 +94,19 @@ class _TestPageState extends State<TestPage> {
         ]
       };
 
-      print("🔵 [API Request] Sending to: $requestUri");
-      print(jsonEncode(requestBody));
-
       final response = await http.post(
         requestUri,
         headers: {
-          "Authorization": "Bearer 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",
+          "Authorization": "Bearer $hfToken",
           "Content-Type": "application/json",
         },
         body: jsonEncode(requestBody),
       );
 
-      print("🟢 [API Response] Status: ${response.statusCode}");
-      print("🟢 [API Response] Body: ${response.body}");
-
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         String eventId = jsonResponse["event_id"];
-        print("🚀 [EVENT ID] Received: $eventId");
 
-        // Wait before fetching result
         await Future.delayed(const Duration(seconds: 2));
 
         return await _fetchResult(eventId);
@@ -128,8 +121,7 @@ class _TestPageState extends State<TestPage> {
   }
 
   Future<Map<String, dynamic>> _fetchResult(String eventId) async {
-    final Uri resultUri = Uri.parse("https://dgsr2809-quest.hf.space/gradio_api/call/result/$eventId");
-    print("🔵 [RESULT] Fetching from: $resultUri");
+    final Uri resultUri = Uri.parse("$hfApiUrl/result/$eventId");
 
     for (int attempt = 0; attempt < 10; attempt++) {
       try {
@@ -137,33 +129,15 @@ class _TestPageState extends State<TestPage> {
           "Authorization": "Bearer $hfToken",
         });
 
-        print("🟢 [RESULT] Status: ${response.statusCode}");
-        print("🟢 [RESULT] Body:\n${response.body}");
-
-        if (response.statusCode == 200) {
-          if (response.body.contains("event: error")) {
-            print("❌ API Error: Response contains 'event: error'");
-            return {};
-          }
-
-          if (response.body.contains("data:")) {
-            // Extract the actual JSON part after "data:"
-            String jsonString = response.body.split("data:")[1].trim();
-            try {
-              return jsonDecode(jsonString);
-            } catch (e) {
-              print("🚨 JSON Decode Error: $e");
-              return {};
-            }
-          }
-        } else {
-          print("❌ Error fetching result: ${response.body}");
+        if (response.statusCode == 200 && response.body.contains("data:")) {
+          String jsonString = response.body.split("data:")[1].trim();
+          return jsonDecode(jsonString);
         }
       } catch (e) {
         print("🚨 Result Fetch Failed: $e");
       }
 
-      await Future.delayed(const Duration(seconds: 2)); // 🔁 Retry after delay
+      await Future.delayed(const Duration(seconds: 2));
     }
 
     print("❌ Fetching result failed after multiple attempts.");
