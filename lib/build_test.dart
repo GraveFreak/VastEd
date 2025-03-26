@@ -93,7 +93,7 @@ class _BuildTestBottomSheetState extends State<BuildTestBottomSheet> {
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [3, 5, 10].map((count) {
+            children: [1, 2, 3].map((count) {
               return GestureDetector(
                 onTap: () {
                   setState(() {
